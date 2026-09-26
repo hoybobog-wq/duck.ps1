@@ -1,9 +1,7 @@
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName System.Windows.Forms
 
-$cpuName = (Get-CimInstance Win32_Processor \vert{} Select-Object -First 1).Name$gpuName = (Get-CimInstance Win32_VideoController | Select-Object -First 1).Name
-$ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1)$osName = (Get-CimInstance Win32_OperatingSystem).Caption
-$pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemProduct).UUID
+$cpuName = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name; $gpuName = (Get-CimInstance Win32_VideoController \vert{} Select-Object -First 1).Name; $ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1); $osName = (Get-CimInstance Win32_OperatingSystem).Caption; $pcName = $env:COMPUTERNAME; $hwid = (Get-CimInstance -Class Win32_ComputerSystemProduct).UUID
 
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
