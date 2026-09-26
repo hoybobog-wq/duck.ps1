@@ -74,7 +74,6 @@ $pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemP
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
-            <!-- Sidebar -->
             <Border Grid.Column="0" Background="#121212" CornerRadius="12,0,0,12" BorderBrush="#222" BorderThickness="0,0,1,0">
                 <Grid>
                     <StackPanel Margin="0,30,0,0">
@@ -96,7 +95,6 @@ $pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemP
                 </Grid>
             </Border>
 
-            <!-- Main Content Area -->
             <Grid Grid.Column="1">
                 <Button Name="BtnClose" Content="✕" Foreground="#888" Background="Transparent" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" Margin="0,10,10,0" FontSize="18" Cursor="Hand" Panel.ZIndex="10"/>
 
@@ -107,7 +105,6 @@ $pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemP
                         </Style>
                     </TabControl.ItemContainerStyle>
 
-                    <!-- TAB 0: Dashboard -->
                     <TabItem>
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="Welcome to DuckDuckSetting" Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -122,7 +119,6 @@ $pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemP
                         </StackPanel>
                     </TabItem>
 
-                    <!-- TAB 1: ONE-CLICK SETUP -->
                     <TabItem>
                         <StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
@@ -146,7 +142,6 @@ $pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemP
                         </StackPanel>
                     </TabItem>
 
-                    <!-- TAB 2: SYSTEM INFO -->
                     <TabItem>
                         <StackPanel>
                             <TextBlock Text="System Information" Foreground="White" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
