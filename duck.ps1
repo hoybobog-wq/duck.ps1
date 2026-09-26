@@ -1,12 +1,10 @@
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName System.Windows.Forms
 
-$cpuName = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name; $gpuName = (Get-CimInstance Win32_VideoController \vert{} Select-Object -First 1).Name; $ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1); $osName = (Get-CimInstance Win32_OperatingSystem).Caption; $pcName = $env:COMPUTERNAME; $hwid = (Get-CimInstance -Class Win32_ComputerSystemProduct).UUID
-
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="DuckDuckSetting" Height="650" Width="950"
+        Title="DuckDuckSetting" Height="600" Width="900"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -88,7 +86,6 @@ $cpuName = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name; $gpu
                         <TextBlock Text="MENU" Foreground="#555" FontSize="11" FontWeight="Bold" Margin="25,0,0,10"/>
                         <RadioButton Name="MenuDashboard" Content="Dashboard" Style="{StaticResource MenuButton}" IsChecked="True"/>
                         <RadioButton Name="MenuSetup" Content="One-Click Setup" Style="{StaticResource MenuButton}"/>
-                        <RadioButton Name="MenuSystemInfo" Content="System Info" Style="{StaticResource MenuButton}"/>
                     </StackPanel>
                 </Grid>
             </Border>
@@ -132,31 +129,9 @@ $cpuName = (Get-CimInstance Win32_Processor | Select-Object -First 1).Name; $gpu
                             <Border Background="#151515" CornerRadius="12" BorderBrush="#333" BorderThickness="1" Padding="30">
                                 <StackPanel>
                                     <TextBlock Text="ระบบจะทำการปรับแต่งดังนี้:" Foreground="White" FontSize="15" FontWeight="Bold" Margin="0,0,0,10"/>
-                                    <TextBlock Text="• Optimize CPU V-Cache &amp; Thread Priority`n• Tune 32GB Memory Mapping`n• Disable Windows GameBar &amp; Anti-Stutter`n• Optimize Network TCP for Low Latency`n• Deep Clean Background Processes &amp; Temp Files" Foreground="#AAA" FontSize="13" LineHeight="22"/>
+                                    <TextBlock Text="• Optimize CPU V-Cache &amp; Thread Priority`n• Tune Memory Mapping`n• Disable Windows GameBar &amp; Anti-Stutter`n• Optimize Network TCP for Low Latency`n• Deep Clean Background Processes &amp; Temp Files" Foreground="#AAA" FontSize="13" LineHeight="22"/>
                                     
                                     <Button Name="BtnRunAll" Content="🚀 APPLY FULL OPTIMIZATION" Style="{StaticResource BigActionButton}" Margin="0,30,0,0"/>
-                                </StackPanel>
-                            </Border>
-                        </StackPanel>
-                    </TabItem>
-
-                    <TabItem>
-                        <StackPanel>
-                            <TextBlock Text="System Information" Foreground="White" FontSize="28" FontWeight="Bold" Margin="0,0,0,20"/>
-                            
-                            <Border Background="#151515" CornerRadius="12" BorderBrush="#222" BorderThickness="1" Padding="25">
-                                <StackPanel>
-                                    <TextBlock Text="Hardware ID (UUID)" Foreground="#666" FontSize="11" FontWeight="Bold"/>
-                                    <TextBox Text="$hwid" Background="#111" Foreground="#4CAF50" BorderThickness="0" Padding="8" Margin="0,5,0,15" IsReadOnly="True" FontSize="13"/>
-                                    
-                                    <TextBlock Text="Processor:" Foreground="#666" FontSize="11" FontWeight="Bold"/>
-                                    <TextBlock Text="$cpuName" Foreground="White" FontSize="14" Margin="0,3,0,15"/>
-                                    
-                                    <TextBlock Text="Graphics:" Foreground="#666" FontSize="11" FontWeight="Bold"/>
-                                    <TextBlock Text="$gpuName" Foreground="White" FontSize="14" Margin="0,3,0,15"/>
-                                    
-                                    <TextBlock Text="Memory:" Foreground="#666" FontSize="11" FontWeight="Bold"/>
-                                    <TextBlock Text="$ramGB GB" Foreground="White" FontSize="14"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -178,7 +153,6 @@ $MainTabControl =$form.FindName("MainTabControl")
 
 $MenuDashboard =$form.FindName("MenuDashboard")
 $MenuSetup =$form.FindName("MenuSetup")
-$MenuSystemInfo =$form.FindName("MenuSystemInfo")
 $BtnRunAll =$form.FindName("BtnRunAll")
 
 $MainBorder.Add_MouseLeftButtonDown({$form.DragMove() })
@@ -186,7 +160,6 @@ $BtnClose.Add_Click({$form.Close() })
 
 $MenuDashboard.Add_Checked({$MainTabControl.SelectedIndex = 0 })
 $MenuSetup.Add_Checked({$MainTabControl.SelectedIndex = 1 })
-$MenuSystemInfo.Add_Checked({$MainTabControl.SelectedIndex = 2 })
 
 $BtnRunAll.Add_Click({
     [System.Windows.Forms.MessageBox]::Show("กำลังเริ่มการตั้งค่า VIP Optimization กรุณารอสักครู่...", "DuckDuckSetting", 0, 64)
