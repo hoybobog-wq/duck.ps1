@@ -1,10 +1,15 @@
 Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName System.Windows.Forms
 
+# ดึงข้อมูลสเปคเครื่อง
+$cpuName = (Get-CimInstance Win32_Processor \vert{} Select-Object -First 1).Name$gpuName = (Get-CimInstance Win32_VideoController | Select-Object -First 1).Name
+$ramGB = [math]::Round((Get-CimInstance Win32_ComputerSystem).TotalPhysicalMemory / 1GB, 1)$osName = (Get-CimInstance Win32_OperatingSystem).Caption
+$pcName = $env:COMPUTERNAME$hwid = (Get-CimInstance -Class Win32_ComputerSystemProduct).UUID
+
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="DuckDuckSetting" Height="600" Width="900"
+        Title="DuckDuckSetting" Height="700" Width="1000"
         WindowStyle="None" AllowsTransparency="True" Background="Transparent"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
@@ -70,6 +75,7 @@ Add-Type -AssemblyName System.Windows.Forms
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             
+            <!-- Sidebar -->
             <Border Grid.Column="0" Background="#121212" CornerRadius="12,0,0,12" BorderBrush="#222" BorderThickness="0,0,1,0">
                 <Grid>
                     <StackPanel Margin="0,30,0,0">
@@ -86,10 +92,12 @@ Add-Type -AssemblyName System.Windows.Forms
                         <TextBlock Text="MENU" Foreground="#555" FontSize="11" FontWeight="Bold" Margin="25,0,0,10"/>
                         <RadioButton Name="MenuDashboard" Content="Dashboard" Style="{StaticResource MenuButton}" IsChecked="True"/>
                         <RadioButton Name="MenuSetup" Content="One-Click Setup" Style="{StaticResource MenuButton}"/>
+                        <RadioButton Name="MenuSystemInfo" Content="System Info" Style="{StaticResource MenuButton}"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
+            <!-- Main Content Area -->
             <Grid Grid.Column="1">
                 <Button Name="BtnClose" Content="✕" Foreground="#888" Background="Transparent" BorderThickness="0" HorizontalAlignment="Right" VerticalAlignment="Top" Width="40" Height="40" Margin="0,10,10,0" FontSize="18" Cursor="Hand" Panel.ZIndex="10"/>
 
@@ -100,6 +108,7 @@ Add-Type -AssemblyName System.Windows.Forms
                         </Style>
                     </TabControl.ItemContainerStyle>
 
+                    <!-- TAB 0: Dashboard -->
                     <TabItem>
                         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
                             <TextBlock Text="Welcome to DuckDuckSetting" Foreground="White" FontSize="32" FontWeight="Bold" HorizontalAlignment="Center"/>
@@ -114,24 +123,48 @@ Add-Type -AssemblyName System.Windows.Forms
                         </StackPanel>
                     </TabItem>
 
+                    <!-- TAB 1: ONE-CLICK SETUP -->
                     <TabItem>
                         <StackPanel>
-                            <StackPanel Orientation="Horizontal" Margin="0,0,0,30">
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,40">
                                 <Border Width="60" Height="60" Background="#222" CornerRadius="12" Margin="0,0,20,0">
                                     <TextBlock Text="⚡" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="30" Foreground="White"/>
                                 </Border>
                                 <StackPanel VerticalAlignment="Center">
-                                    <TextBlock Text="Auto VIP Optimization" Foreground="White" FontSize="26" FontWeight="Bold"/>
-                                    <TextBlock Text="กดปุ่มเดียวเพื่อปรับแต่งระบบทั้งหมดให้พร้อมเล่น FiveM" Foreground="#888" FontSize="13"/>
+                                    <TextBlock Text="Auto VIP Optimization" Foreground="White" FontSize="28" FontWeight="Bold"/>
+                                    <TextBlock Text="รันการตั้งค่า CPU 9800X3D, RAM 32GB, Network และปิดการทำงานพื้นหลังทั้งหมดในปุ่มเดียว" Foreground="#888" FontSize="14"/>
                                 </StackPanel>
                             </StackPanel>
                             
-                            <Border Background="#151515" CornerRadius="12" BorderBrush="#333" BorderThickness="1" Padding="30">
+                            <Border Background="#151515" CornerRadius="12" BorderBrush="#333" BorderThickness="1" Padding="40" Margin="0,20,0,0">
                                 <StackPanel>
-                                    <TextBlock Text="ระบบจะทำการปรับแต่งดังนี้:" Foreground="White" FontSize="15" FontWeight="Bold" Margin="0,0,0,10"/>
-                                    <TextBlock Text="• Optimize CPU V-Cache &amp; Thread Priority`n• Tune Memory Mapping`n• Disable Windows GameBar &amp; Anti-Stutter`n• Optimize Network TCP for Low Latency`n• Deep Clean Background Processes &amp; Temp Files" Foreground="#AAA" FontSize="13" LineHeight="22"/>
+                                    <TextBlock Text="What will this do?" Foreground="White" FontSize="16" FontWeight="Bold" Margin="0,0,0,15"/>
+                                    <TextBlock Text="• Optimize CPU V-Cache &amp; Thread Priority`n• Tune 32GB Memory Mapping`n• Disable Windows GameBar &amp; Anti-Stutter`n• Optimize Network TCP for Low Latency`n• Deep Clean Background Processes &amp; Temp Files" Foreground="#AAA" FontSize="14" LineHeight="25"/>
                                     
-                                    <Button Name="BtnRunAll" Content="🚀 APPLY FULL OPTIMIZATION" Style="{StaticResource BigActionButton}" Margin="0,30,0,0"/>
+                                    <Button Name="BtnRunAll" Content="🚀 APPLY FULL OPTIMIZATION" Style="{StaticResource BigActionButton}" Margin="0,40,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </TabItem>
+
+                    <!-- TAB 2: SYSTEM INFO -->
+                    <TabItem>
+                        <StackPanel>
+                            <TextBlock Text="System Information" Foreground="White" FontSize="28" FontWeight="Bold" Margin="0,0,0,30"/>
+                            
+                            <Border Background="#151515" CornerRadius="12" BorderBrush="#222" BorderThickness="1" Padding="30">
+                                <StackPanel>
+                                    <TextBlock Text="Hardware ID (UUID)" Foreground="#666" FontSize="12" FontWeight="Bold"/>
+                                    <TextBox Text="$hwid" Background="#111" Foreground="#4CAF50" BorderThickness="0" Padding="10" Margin="0,10,0,20" IsReadOnly="True" FontSize="14"/>
+                                    
+                                    <TextBlock Text="Processor:" Foreground="#666" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Text="$cpuName" Foreground="White" FontSize="16" Margin="0,5,0,20"/>
+                                    
+                                    <TextBlock Text="Graphics:" Foreground="#666" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Text="$gpuName" Foreground="White" FontSize="16" Margin="0,5,0,20"/>
+                                    
+                                    <TextBlock Text="Memory:" Foreground="#666" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Text="$ramGB GB" Foreground="White" FontSize="16"/>
                                 </StackPanel>
                             </Border>
                         </StackPanel>
@@ -147,37 +180,56 @@ Add-Type -AssemblyName System.Windows.Forms
 $reader = (New-Object System.Xml.XmlNodeReader $xaml)
 $form = [Windows.Markup.XamlReader]::Load($reader)
 
+# Map UI Elements
 $MainBorder =$form.FindName("MainBorder")
 $BtnClose =$form.FindName("BtnClose")
 $MainTabControl =$form.FindName("MainTabControl")
 
 $MenuDashboard =$form.FindName("MenuDashboard")
 $MenuSetup =$form.FindName("MenuSetup")
+$MenuSystemInfo =$form.FindName("MenuSystemInfo")
+
 $BtnRunAll =$form.FindName("BtnRunAll")
 
+# Window Drag & Close
 $MainBorder.Add_MouseLeftButtonDown({$form.DragMove() })
 $BtnClose.Add_Click({$form.Close() })
 
+# Navigation
 $MenuDashboard.Add_Checked({$MainTabControl.SelectedIndex = 0 })
 $MenuSetup.Add_Checked({$MainTabControl.SelectedIndex = 1 })
+$MenuSystemInfo.Add_Checked({$MainTabControl.SelectedIndex = 2 })
 
+# --- ปุ่ม One-Click Setup ---
+# โค้ดนี้จะสั่งรันคำสั่ง CMD โดยตรงจากปุ่มเดียวเลย
 $BtnRunAll.Add_Click({
     [System.Windows.Forms.MessageBox]::Show("กำลังเริ่มการตั้งค่า VIP Optimization กรุณารอสักครู่...", "DuckDuckSetting", 0, 64)
     
+    # 1. CPU
     cmd.exe /c 'reg add "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Image File Execution Options\FiveM.exe\PerfOptions" /v "CpuPriorityClass" /t REG_DWORD /d 3 /f >nul 2>&1'
     cmd.exe /c 'reg add "HKLM\SYSTEM\CurrentControlSet\Control\PriorityControl" /v "Win32PrioritySeparation" /t REG_DWORD /d 26 /f >nul 2>&1'
+    
+    # 2. RAM
     cmd.exe /c 'reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "DisablePagingExecutive" /t REG_DWORD /d 1 /f >nul 2>&1'
     cmd.exe /c 'reg add "HKLM\SYSTEM\CurrentControlSet\Control\Session Manager\Memory Management" /v "LargeSystemCache" /t REG_DWORD /d 1 /f >nul 2>&1'
+    
+    # 3. GPU
     cmd.exe /c 'reg add "HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers" /v "HwSchMode" /t REG_DWORD /d 2 /f >nul 2>&1'
     cmd.exe /c 'reg add "HKCU\System\GameConfigStore" /v "GameDVR_Enabled" /t REG_DWORD /d 0 /f >nul 2>&1'
+    
+    # 4. Network
     cmd.exe /c 'netsh int tcp set global autotuninglevel=normal >nul 2>&1'
     cmd.exe /c 'reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "TcpAckFrequency" /t REG_DWORD /d 1 /f >nul 2>&1'
     cmd.exe /c 'reg add "HKLM\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" /v "TCPNoDelay" /t REG_DWORD /d 1 /f >nul 2>&1'
+    cmd.exe /c 'reg add "HKLM\SOFTWARE\Policies\Microsoft\Windows\Psched" /v "NonBestEffortLimit" /t REG_DWORD /d 0 /f >nul 2>&1'
+    
+    # 5. Debloat & Temp Clean
     cmd.exe /c 'taskkill /f /im "OneDrive.exe" 2>nul'
     cmd.exe /c 'taskkill /f /im "SearchIndexer.exe" 2>nul'
     cmd.exe /c 'del /s /f /q "%USERPROFILE%\AppData\Local\Temp\*" 2>nul'
-    
-    [System.Windows.Forms.MessageBox]::Show("ตั้งค่าเสร็จสิ้น! กรุณารีสตาร์ทเครื่อง 1 ครั้ง", "DuckDuckSetting", 0, 64)
+    cmd.exe /c 'del /s /f /q "C:\Windows\Temp\*" 2>nul'
+
+    [System.Windows.Forms.MessageBox]::Show("ทำรายการตั้งค่าเครื่องระดับ VIP เสร็จสิ้น! กรุณารีสตาร์ทเครื่องเพื่อให้มีผลครบ 100%", "DuckDuckSetting", 0, 64)
 })
 
 $form.ShowDialog() | Out-Null
